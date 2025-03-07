@@ -12,6 +12,7 @@ BUTTON_HEIGHT = 40
 BUTTON_COLOR = (50, 50, 50)
 BUTTON_TEXT_COLOR = (255, 255, 255)
 TOGGLE_BUTTON_COLOR = (70, 70, 70)
+LABEL_COLOR = (128, 128, 128)
 
 
 def load_images():
@@ -133,6 +134,29 @@ def draw_button(screen, text, font, rect, color):
     return rect
 
 
+def draw_labels(screen, font):
+    # Draw column letters (a-h)
+    for file in range(8):
+        label = chr(ord("a") + file)
+        text_surface = font.render(label, True, LABEL_COLOR)
+        text_rect = text_surface.get_rect(
+            center=(
+                file * SQUARE_SIZE + SQUARE_SIZE // 2,
+                HEIGHT - BUTTON_HEIGHT * 2 - 7,
+            )
+        )
+        screen.blit(text_surface, text_rect)
+
+    # Draw row numbers (1-8)
+    for rank in range(8):
+        label = str(8 - rank)
+        text_surface = font.render(label, True, LABEL_COLOR)
+        text_rect = text_surface.get_rect(
+            center=(7, (rank) * SQUARE_SIZE + SQUARE_SIZE // 2)
+        )
+        screen.blit(text_surface, text_rect)
+
+
 def main(fen):
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -142,6 +166,7 @@ def main(fen):
     dragging = False
     selected_square = None
     font = pygame.font.Font(None, 36)
+    label_font = pygame.font.Font(None, 24)
 
     # Toggles for showing attacks
     show_white_attacks = True
@@ -165,6 +190,7 @@ def main(fen):
             show_black_attacks,
         )
         draw_pieces(screen, board, images)
+        draw_labels(screen, label_font)
 
         # Draw buttons
         undo_button_rect = pygame.Rect(
